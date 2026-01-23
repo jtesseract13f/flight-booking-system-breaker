@@ -1,0 +1,75 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "source", "source", "{E4BA3070-9D76-4DAB-9983-501A51658438}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{366753FD-21CC-4843-9B44-E7F9825FBEF3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "items", "items", "{DEF54AF9-A43B-46F3-97C4-B60651AE0D87}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yml = docker-compose.yml
+		README.md = README.md
+		v1\[inst][v1] Flight Booking System.yml = v1\[inst][v1] Flight Booking System.yml
+		v1\postman\collection.json = v1\postman\collection.json
+		v1\postman\environment.json = v1\postman\environment.json
+		v1\README.md = v1\README.md
+		scripts\wait-for.sh = scripts\wait-for.sh
+		scripts\wait-script.sh = scripts\wait-script.sh
+		postgres\10-create-user.sql = postgres\10-create-user.sql
+		postgres\scripts\db-v1.sql = postgres\scripts\db-v1.sql
+		postgres\20-create-databases.sh = postgres\20-create-databases.sh
+		images\services.drawio = images\services.drawio
+		images\services.png = images\services.png
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BonusServiceApi", "src\BonusServiceApi\BonusServiceApi.csproj", "{D3FB02C9-A516-4324-9BA3-D17FD08EA527}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlightServiceApi", "src\FlightServiceApi\FlightServiceApi.csproj", "{8CCDFF63-C733-4CFE-AAD5-64F36421027F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TicketServiceApi", "src\TicketServiceApi\TicketServiceApi.csproj", "{7CFE863E-5567-4A07-B458-937003FDAC88}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GatewayService", "src\GatewayService\GatewayService.csproj", "{08517572-5CCE-4FA6-A7C7-8CBF025D53BC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GatewayService.Test", "src\Tests\GatewayService.Test\GatewayService.Test.csproj", "{34D12533-A4F9-4386-81FE-D0D0E52AC079}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TicketService.Test", "src\Tests\TicketService.Test\TicketService.Test.csproj", "{E7094048-46E4-49BA-883D-C5C06A5760DB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D3FB02C9-A516-4324-9BA3-D17FD08EA527}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3FB02C9-A516-4324-9BA3-D17FD08EA527}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3FB02C9-A516-4324-9BA3-D17FD08EA527}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3FB02C9-A516-4324-9BA3-D17FD08EA527}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8CCDFF63-C733-4CFE-AAD5-64F36421027F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8CCDFF63-C733-4CFE-AAD5-64F36421027F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8CCDFF63-C733-4CFE-AAD5-64F36421027F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8CCDFF63-C733-4CFE-AAD5-64F36421027F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7CFE863E-5567-4A07-B458-937003FDAC88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7CFE863E-5567-4A07-B458-937003FDAC88}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7CFE863E-5567-4A07-B458-937003FDAC88}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7CFE863E-5567-4A07-B458-937003FDAC88}.Release|Any CPU.Build.0 = Release|Any CPU
+		{08517572-5CCE-4FA6-A7C7-8CBF025D53BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08517572-5CCE-4FA6-A7C7-8CBF025D53BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08517572-5CCE-4FA6-A7C7-8CBF025D53BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08517572-5CCE-4FA6-A7C7-8CBF025D53BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34D12533-A4F9-4386-81FE-D0D0E52AC079}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34D12533-A4F9-4386-81FE-D0D0E52AC079}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34D12533-A4F9-4386-81FE-D0D0E52AC079}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34D12533-A4F9-4386-81FE-D0D0E52AC079}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E7094048-46E4-49BA-883D-C5C06A5760DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7094048-46E4-49BA-883D-C5C06A5760DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7094048-46E4-49BA-883D-C5C06A5760DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7094048-46E4-49BA-883D-C5C06A5760DB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{08517572-5CCE-4FA6-A7C7-8CBF025D53BC} = {E4BA3070-9D76-4DAB-9983-501A51658438}
+		{34D12533-A4F9-4386-81FE-D0D0E52AC079} = {366753FD-21CC-4843-9B44-E7F9825FBEF3}
+		{E7094048-46E4-49BA-883D-C5C06A5760DB} = {366753FD-21CC-4843-9B44-E7F9825FBEF3}
+		{7CFE863E-5567-4A07-B458-937003FDAC88} = {E4BA3070-9D76-4DAB-9983-501A51658438}
+		{8CCDFF63-C733-4CFE-AAD5-64F36421027F} = {E4BA3070-9D76-4DAB-9983-501A51658438}
+		{D3FB02C9-A516-4324-9BA3-D17FD08EA527} = {E4BA3070-9D76-4DAB-9983-501A51658438}
+	EndGlobalSection
+EndGlobal

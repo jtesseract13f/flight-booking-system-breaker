@@ -1,20 +1,124 @@
 version: "3"
 services:
-  postgres:
-    image: library/postgres:13
-    container_name: postgres
-    restart: on-failure
+  bonus-service:
+    build:
+      context: .
+      dockerfile: ./src/BonusServiceApi/Dockerfile
+    container_name: bonus-service
+    ports:
+      - "8050:8080"
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: "postgres"
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__Default=Host=bonus-db;Port=5432;Database=BonusDb;Username=postgres;Password=postgres
+    depends_on:
+      bonus-db:
+        condition: service_healthy
+
+  bonus-db:
+    image: postgres:15-alpine
+    container_name: bonus-db
+    environment:
       POSTGRES_DB: postgres
-    volumes:
-      - db-data:/var/lib/postgresql/data
-      - ./postgres/:/docker-entrypoint-initdb.d/
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
     ports:
       - "5432:5432"
+    volumes:
+      - bonus-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -p 5432" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+  
+  #######        
+  ticket-service:
+    build:
+      context: .
+      dockerfile: ./src/TicketServiceApi/Dockerfile
+    container_name: ticket-service
+    ports:
+      - "8070:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__Default=Host=ticket-db;Port=5433;Database=TicketDb;Username=postgres;Password=postgres
+    depends_on:
+      ticket-db:
+        condition: service_healthy
 
-# TODO добавить сервисы
+  ticket-db:
+    image: postgres:15-alpine
+    container_name: ticket-db
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    expose:
+      - "5433"
+    ports:
+      - "5433:5433"
+    volumes:
+      - ticket-postgres-data:/var/lib/postgresql/data
+    command: -p 5433
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -p 5433" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+  
+  #######        
+  flight-service:
+    build:
+      context: .
+      dockerfile: ./src/FlightServiceApi/Dockerfile
+    container_name: flight-service
+    ports:
+      - "8060:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__Default=Host=flight-db;Port=5434;Database=FlightDb;Username=postgres;Password=postgres
+    depends_on:
+      flight-db:
+        condition: service_healthy
+
+  flight-db:
+    image: postgres:15-alpine
+    container_name: flight-db
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    expose:
+      - "5434"
+    ports:
+      - "5434:5434"
+    volumes:
+      - flight-postgres-data:/var/lib/postgresql/data
+    command: -p 5434
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -p 5434" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  #######        
+  gateway-service:
+    build:
+      context: .
+      dockerfile: ./src/GatewayService/Dockerfile
+    container_name: gateway-service
+    ports:
+      - "8080:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    depends_on:
+      - flight-service
+      - ticket-service
+      - bonus-service
 
 volumes:
-  db-data:
+  bonus-postgres-data:
+  ticket-postgres-data:
+  flight-postgres-data:
+
+
