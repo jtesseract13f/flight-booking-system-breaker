@@ -11,8 +11,6 @@ builder.Services.AddDbContext<FlightDbContext>(x => x.UseNpgsql(builder.Configur
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
-var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
-app.Urls.Add($"http://*:{port}");
 
 try //Migrator
 {

@@ -1,6 +1,8 @@
 using GatewayService.ApiServices;
 using GatewayService.DTO;
 using GatewayService.DTO.BonusServiceDtos;
+using GatewayService.DTO.FlightApiDtos;
+using Polly.CircuitBreaker;
 
 namespace GatewayService.BLL;
 
@@ -77,8 +79,17 @@ public class BookingService(IBonusApi bonusService, IFlightApi flightService, IT
     {
         var ticket = await ticketService.GetTicket(ticketUid, username); 
         if (ticket == null) throw new NotFoundException($"Ticket {ticketUid} not found");
-        var flight = await flightService.GetFlightInfo(ticket.FlightNumber);
-        if (flight == null) throw new NotFoundException($"Flight {ticket.FlightNumber} not found");
+        var flight = new Flight("1", null, null, null, 300);
+        try
+        {
+            flight = await flightService.GetFlightInfo(ticket.FlightNumber);
+            if (flight == null) throw new NotFoundException($"Flight {ticket.FlightNumber} not found");
+
+        }
+        catch (BrokenCircuitException)
+        {
+            Console.WriteLine("FLIGHT CIRCUIT FAILED");
+        }
 
         return new TicketInfo(
             ticket.TicketUid,

@@ -3,9 +3,9 @@ namespace GatewayService.DTO;
 public record PurchasedTicketInfo(
     Guid TicketUid,
     string FlightNumber,
-    string FromAirport,
-    string ToAirport,
-    DateTime Date,
+    string? FromAirport,
+    string? ToAirport,
+    DateTime? Date,
     int Price,
     int PaidByMoney,
     int PaidByBonuses,

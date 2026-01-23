@@ -3,12 +3,17 @@ using GatewayService.ApiServices;
 using GatewayService.BLL;
 using GatewayService.DTO;
 using GatewayService.DTO.FlightApiDtos;
+using GatewayService.Infrastructure;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Polly;
 using Refit;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddTransient<CircuitBreaker>();
+
 var servicesConfig = builder.Configuration.GetSection("Microservices");
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -16,16 +21,18 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddRefitClient<IFlightApi>()
-    .ConfigureHttpClient(c => c.BaseAddress = new Uri(servicesConfig["FlightServiceApi"] ?? throw new InvalidOperationException()));
+    .ConfigureHttpClient(c => c.BaseAddress = new Uri(servicesConfig["FlightServiceApi"] ?? throw new InvalidOperationException()))
+    .AddHttpMessageHandler<CircuitBreaker>();
 builder.Services.AddRefitClient<ITicketApi>()
-    .ConfigureHttpClient(c => c.BaseAddress = new Uri(servicesConfig["TicketServiceApi"] ?? throw new InvalidOperationException()));
+    .ConfigureHttpClient(c => c.BaseAddress = new Uri(servicesConfig["TicketServiceApi"] ?? throw new InvalidOperationException()))
+    .AddHttpMessageHandler<CircuitBreaker>();
 builder.Services.AddRefitClient<IBonusApi>()
-    .ConfigureHttpClient(c => c.BaseAddress = new Uri(servicesConfig["BonusServiceApi"] ?? throw new InvalidOperationException()));
+    .ConfigureHttpClient(c => c.BaseAddress = new Uri(servicesConfig["BonusServiceApi"] ?? throw new InvalidOperationException()))
+    .AddHttpMessageHandler<CircuitBreaker>();
+
 builder.Services.AddScoped<BookingService>();
 
 var app = builder.Build();
-var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
-app.Urls.Add($"http://*:{port}");
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
