@@ -8,39 +8,53 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Polly;
+using Polly.CircuitBreaker;
 using Refit;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddTransient<PolicyAwareHandler>();
 builder.Services.AddTransient<CircuitBreaker>();
-
 var servicesConfig = builder.Configuration.GetSection("Microservices");
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddRefitClient<IFlightApi>()
     .ConfigureHttpClient(c => c.BaseAddress = new Uri(servicesConfig["FlightServiceApi"] ?? throw new InvalidOperationException()))
-    .AddHttpMessageHandler<CircuitBreaker>();
+    .AddHttpMessageHandler<CircuitBreaker>()
+    .AddHttpMessageHandler<PolicyAwareHandler>();
 builder.Services.AddRefitClient<ITicketApi>()
-    .ConfigureHttpClient(c => c.BaseAddress = new Uri(servicesConfig["TicketServiceApi"] ?? throw new InvalidOperationException()))
-    .AddHttpMessageHandler<CircuitBreaker>();
+    .ConfigureHttpClient(c =>
+        c.BaseAddress = new Uri(servicesConfig["TicketServiceApi"] ?? throw new InvalidOperationException()))
+    .AddHttpMessageHandler<CircuitBreaker>()
+    .AddHttpMessageHandler<PolicyAwareHandler>();
 builder.Services.AddRefitClient<IBonusApi>()
-    .ConfigureHttpClient(c => c.BaseAddress = new Uri(servicesConfig["BonusServiceApi"] ?? throw new InvalidOperationException()))
-    .AddHttpMessageHandler<CircuitBreaker>();
+    .ConfigureHttpClient(c =>
+        c.BaseAddress = new Uri(servicesConfig["BonusServiceApi"] ?? throw new InvalidOperationException()))
+    .AddHttpMessageHandler<CircuitBreaker>()
+    .AddHttpMessageHandler<PolicyAwareHandler>();
+
+builder.Services.AddRefitClient<IMockApi>()
+    .ConfigureHttpClient(c => c.BaseAddress = new Uri("http://flight-service:9091/"))
+    .AddHttpMessageHandler<CircuitBreaker>()
+    .AddHttpMessageHandler<PolicyAwareHandler>();
+
+builder.Services.AddHttpClient("configured-inner-client")
+    .AddHttpMessageHandler<CircuitBreaker>()
+    .AddHttpMessageHandler<PolicyAwareHandler>();
 
 builder.Services.AddScoped<BookingService>();
 
+builder.Services.AddHostedService<QueueWorkerService>();
+
 var app = builder.Build();
-// Configure the HTTP request pipeline.
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-//app.UseHttpsRedirection();
 
 app.UseExceptionHandler(appBuilder =>
 {
@@ -86,6 +100,28 @@ apiV1.MapGet("/flights", async ([FromQuery] int page, [FromQuery] int size, IFli
   )
     .WithDescription("Получить список рейсов")
     .WithOpenApi();
+
+apiV1.MapGet("/check-fallback", async ([FromHeader(Name = "X-User-Name")]string username,
+        IMockApi api) =>
+    {
+        try
+        {
+            var res = await api.GetFlightInfo("");
+            return "Оно не должно работать.";
+        }
+        catch (BrokenCircuitException e)
+        {
+            return "синий синий сеньор упал на провода, сервер не поднимется больше никогда: " + e.Message ;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return "Успех! Ничего не работает: " + e.Message;
+        }
+    })
+    .WithDescription("Тестирование fallback")
+    .WithOpenApi();
+
 
 //TODO: Test
 apiV1.MapGet("/privilege", async ([FromHeader(Name = "X-User-Name")]string username,
