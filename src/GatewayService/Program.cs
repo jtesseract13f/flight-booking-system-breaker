@@ -80,7 +80,7 @@ app.UseExceptionHandler(appBuilder =>
             code = context.Response.StatusCode
         };
 
-        await context.Response.WriteAsJsonAsync(problem);
+        await context.Response.WriteAsJsonAsync("Bonus Service unavailable");
     });
 });
 
