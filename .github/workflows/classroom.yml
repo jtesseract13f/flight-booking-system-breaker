@@ -41,6 +41,18 @@ jobs:
           SERVICE_NAME: bonus-service
           PORT_NUMBER: 8050
 
+      - name: Get Gateway logs
+        if: always()  
+        run: docker compose logs gateway-service
+
+      - name: Get Bonus logs  
+        if: always()
+        run: docker compose logs bonus-service
+
+      - name: Get all services logs
+        if: always()
+        run: docker compose logs
+        
       - name: Stop containers
         if: always()
         continue-on-error: true
