@@ -107,9 +107,19 @@ public class BookingService(IBonusApi bonusService, IFlightApi flightService, IT
 
     public async Task<UserInfo?> GetUser(string username)
     {
-        var privilege = await bonusService.GetBalanceInfo(username);
-        if (privilege == null) throw new NotFoundException($"User {username} not found");
-        var tickets =  await GetUserTickets(username);
+        var tickets = new List<TicketInfo>();
+        BalanceInfo privilege = null;
+        try
+        {
+            privilege = await bonusService.GetBalanceInfo(username);
+            if (privilege == null) throw new NotFoundException($"User {username} not found");
+            tickets =  (await GetUserTickets(username)).ToList();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+        if (privilege == null) return new UserInfo(tickets,  new Privilege(0, ""));
         return new UserInfo(tickets,  new Privilege(privilege.Balance, privilege.Status));
     }
     

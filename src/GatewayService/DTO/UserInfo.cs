@@ -3,8 +3,8 @@ using GatewayService.DTO.TicketServiceDtos;
 namespace GatewayService.DTO;
 
 public record UserInfo(
- IEnumerable<TicketInfo> Tickets,
- Privilege Privilege);
+ IEnumerable<TicketInfo>? Tickets,
+ Privilege? Privilege);
 
 /*
  *

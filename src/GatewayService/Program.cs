@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Web.Http;
 using GatewayService.ApiServices;
 using GatewayService.BLL;
 using GatewayService.DTO;
@@ -67,6 +68,8 @@ app.UseExceptionHandler(appBuilder =>
         {
             ValidationException => StatusCodes.Status400BadRequest,
             NotFoundException => StatusCodes.Status404NotFound,
+            HttpRequestException => StatusCodes.Status503ServiceUnavailable,
+            HttpResponseException => StatusCodes.Status503ServiceUnavailable,
             _ => StatusCodes.Status500InternalServerError
         };
 
