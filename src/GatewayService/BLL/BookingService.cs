@@ -119,7 +119,7 @@ public class BookingService(IBonusApi bonusService, IFlightApi flightService, IT
         {
             Console.WriteLine(e);
         }
-        if (privilege == null) return new UserInfo(tickets,  new Privilege(null, null));
+        if (privilege == null) return new UserInfo(tickets,  null);
         return new UserInfo(tickets,  new Privilege(privilege.Balance, privilege.Status));
     }
     
