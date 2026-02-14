@@ -79,8 +79,11 @@ app.UseExceptionHandler(appBuilder =>
             trace =  error?.StackTrace,
             code = context.Response.StatusCode
         };
-
-        await context.Response.WriteAsJsonAsync("Bonus Service unavailable");
+        var err = new
+        {
+            message = "Bonus Service unavailable"
+        };
+        await context.Response.WriteAsJsonAsync(err);
     });
 });
 
