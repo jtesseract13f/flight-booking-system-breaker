@@ -6,7 +6,7 @@ services:
       dockerfile: ./src/BonusServiceApi/Dockerfile
     container_name: bonus-service
     ports:
-      - "8050:8080"
+      - "8050:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__Default=Host=bonus-db;Port=5432;Database=BonusDb;Username=postgres;Password=postgres
@@ -38,7 +38,7 @@ services:
       dockerfile: ./src/TicketServiceApi/Dockerfile
     container_name: ticket-service
     ports:
-      - "8070:8080"
+      - "8070:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__Default=Host=ticket-db;Port=5433;Database=TicketDb;Username=postgres;Password=postgres
@@ -73,7 +73,7 @@ services:
       dockerfile: ./src/FlightServiceApi/Dockerfile
     container_name: flight-service
     ports:
-      - "8060:8080"
+      - "8060:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__Default=Host=flight-db;Port=5434;Database=FlightDb;Username=postgres;Password=postgres
@@ -108,7 +108,7 @@ services:
       dockerfile: ./src/GatewayService/Dockerfile
     container_name: gateway-service
     ports:
-      - "8080:8080"
+      - "8080:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     depends_on:

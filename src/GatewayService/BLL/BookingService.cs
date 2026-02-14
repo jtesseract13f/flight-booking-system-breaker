@@ -27,9 +27,8 @@ public class BookingService(IBonusApi bonusService, IFlightApi flightService, IT
         {
             flight = await flightService.GetFlightInfo(request.FlightNumber);
         }
-        catch (BrokenCircuitException)
+        catch (Exception e)
         {
-            Console.WriteLine("FLIGHT CIRCUIT FAILED");
             throw;
         }
         if (flight == null) throw new NotFoundException($"Flight {request.FlightNumber} not found");
@@ -88,11 +87,22 @@ public class BookingService(IBonusApi bonusService, IFlightApi flightService, IT
 
     public async Task CancelTicket(string username, Guid ticketUid)
     {
-        var result = await bonusService.RevertPurchase(username, ticketUid);
-        var result2 = await ticketService.CancelTicket(ticketUid);
-        //TODO: revert transaction
-        
-        if (result != ticketUid || result2 != ticketUid) throw new Exception($"Can't cancel purchase for ticket {ticketUid}");
+        try
+        {
+            var result = await bonusService.RevertPurchase(username, ticketUid);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+        try
+        {
+            var result2 = await ticketService.CancelTicket(ticketUid);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
     }
 
     public async Task<UserInfo?> GetUser(string username)
